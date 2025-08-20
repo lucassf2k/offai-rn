@@ -33,7 +33,7 @@ export async function initModel(input: string) {
   const res = await ctx.completion({
     messages: [
       { role: "system", content: "Você é um assistente simpático." },
-      { role: "user", content: "Olá" },
+      { role: "user", content: input },
     ],
     n_predict: 8,
     stop: stopWords,
