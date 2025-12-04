@@ -6,7 +6,8 @@ import { ProgressBar } from "react-native-paper";
 
 const BASE_PATH = FileSystem.documentDirectory;
 const DOWNLOAD_DIR = `${BASE_PATH}models/`;
-const MODEL_NAME = "Phi-3-mini-4k-instruct-q4.gguf";
+// const MODEL_NAME = "Phi-3-mini-4k-instruct-q4.gguf";
+const MODEL_NAME = "gemma-3-1b-it-Q4_0.gguf";
 const MODEL_PATH = `${DOWNLOAD_DIR}${MODEL_NAME}`;
 
 export default function ModelDownloader() {
@@ -56,11 +57,14 @@ export default function ModelDownloader() {
     }
   }
 
+  // https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_0.gguf
+  // https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf
+
   const handleDownload = async () => {
     setDownloading(true);
     try {
       await downloadModel(
-        "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
+        "https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_0.gguf",
         (p) => setProgress(p)
       );
     } catch (err) {
@@ -71,7 +75,7 @@ export default function ModelDownloader() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Picker
+      {/* <Picker
         selectedValue={selectedModel}
         onValueChange={(itemValue) => setSelectedModel(itemValue)}
         style={S.picker}
@@ -81,7 +85,7 @@ export default function ModelDownloader() {
         <Picker.Item label="Gemma 2B" value="gemma" />
         <Picker.Item label="Phi 3 Mini" value="phi3" />
         <Picker.Item label="LLaMA 3.2 1B" value="llama1b" />
-      </Picker>
+      </Picker> */}
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableOpacity style={S.button} onPress={handleDownload}>
@@ -90,7 +94,7 @@ export default function ModelDownloader() {
 
         <TouchableOpacity
           style={[S.button, { backgroundColor: "red" }]}
-          onPress={handleDownload}
+          onPress={() => {}}
         >
           <Text style={S.buttonText}>Remover modelo</Text>
         </TouchableOpacity>

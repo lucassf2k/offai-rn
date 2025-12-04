@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+
+    participant User as Usuário
+    participant App as App
+    participant LLM as LLM Engine
+
+    User ->> App: Abre o app
+    App -->> User: Exibe Modelos Disponíveis<br/>(+ Opção: Baixar Modelos)
+
+    User ->> App: Selecionar "Baixar Modelos"
+    App ->> App: Exibe catálogo de modelos online
+    User ->> App: Escolhe modelo p/ download
+    App ->> App: Baixa e instala modelo
+    App -->> User: Modelo instalado com sucesso
+
+    User ->> App: Selecionar LLM no Dispositivo
+
+    User ->> App: Envia Pergunta
+    App ->> App: Estado "Loading" Processando Resposta
+
+    App ->> LLM: Solicita Inferência
+    LLM -->> App: Gera Tokens (stream)
+    App -->> User: Finaliza o estado "Loading"
+    App -->> User: Exibir token a token
+    LLM -->> App: Finaliza "stream"
+
+    App -->> User: Resposta Completa Exibida
+
+    Note right of User: "Usuário decide se fará<br/>uma nova pergunta."
+
+    User ->> App: Nova Pergunta? (Sim)
+    App -->> User: Retorna para Seleção do Modelo
+
+    User --x App: Nova Pergunta? (Não)
+    App -->> User: Finaliza o app

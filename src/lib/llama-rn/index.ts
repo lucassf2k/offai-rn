@@ -1,5 +1,10 @@
 import * as FileSystem from "expo-file-system";
-import { loadLlamaModelInfo, initLlama } from "llama.rn";
+import {
+  loadLlamaModelInfo,
+  initLlama,
+  LlamaContext,
+  TokenData,
+} from "llama.rn";
 import { LLM_PATHS } from "@/lib/llama-rn/constants";
 
 export async function downloadModel(url: string) {
@@ -21,31 +26,48 @@ export async function loadModel() {
   console.log(JSON.stringify(info, null, 2));
 }
 
-export async function initModel(input: string) {
+export async function initModel(filename: string): Promise<LlamaContext> {
   console.log("Inicializando contexto...");
   const ctx = await initLlama({
-    model: LLM_PATHS.MODEL_PATH, // aqui vai direto o path do expo-file-system
+    model: `${LLM_PATHS.DOWNLOAD_DIR}/${filename}`, // aqui vai direto o path do expo-file-system
     n_ctx: 2048,
     use_mlock: true,
     n_gpu_layers: 99, // só iOS
   });
+  return ctx;
+}
+
+export async function generateResponse(
+  ctx: LlamaContext,
+  input: string,
+  callback?: (data: TokenData) => void,
+  nPredict: number = 100
+) {
   const stopWords = ["</s>", "<|end|>", "<|eot_id|>", "<|end_of_text|>"];
-  const res = await ctx.completion({
-    messages: [
-      { role: "system", content: "Você é um assistente simpático." },
-      { role: "user", content: input },
-    ],
-    n_predict: 8,
-    stop: stopWords,
-  });
+  const res = await ctx.completion(
+    {
+      messages: [
+        { role: "system", content: "Você é um assistente simpático." },
+        { role: "user", content: input },
+      ],
+      n_predict: nPredict,
+      temperature: 0.8,
+      stop: stopWords,
+    },
+    callback
+  );
   return res.text;
 }
 
-export async function removeModel() {
+export async function removeModel(filename: string) {
   try {
-    const fileInfo = await FileSystem.getInfoAsync(LLM_PATHS.MODEL_PATH);
+    const fileInfo = await FileSystem.getInfoAsync(
+      `${LLM_PATHS.DOWNLOAD_DIR}/${filename}`
+    );
     if (fileInfo.exists) {
-      await FileSystem.deleteAsync(LLM_PATHS.MODEL_PATH, { idempotent: true });
+      await FileSystem.deleteAsync(`${LLM_PATHS.DOWNLOAD_DIR}/${filename}`, {
+        idempotent: true,
+      });
       console.log("🗑️ Modelo removido:", LLM_PATHS.MODEL_PATH);
     } else {
       console.log("⚠️ Modelo não encontrado:", LLM_PATHS.MODEL_PATH);

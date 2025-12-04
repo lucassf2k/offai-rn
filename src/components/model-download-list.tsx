@@ -9,6 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { ProgressBar } from "react-native-paper";
+import { removeModel } from "@/lib/llama-rn";
 
 const BASE_PATH = FileSystem.documentDirectory;
 const DOWNLOAD_DIR = `${BASE_PATH}models/`;
@@ -16,9 +17,37 @@ const MODEL_NAME = "Phi-3-mini-4k-instruct-q4.gguf";
 const MODEL_PATH = `${DOWNLOAD_DIR}${MODEL_NAME}`;
 
 const models = [
-  { id: "1", name: "Gemma 2B" },
-  { id: "2", name: "Phi 3 Mini" },
-  { id: "3", name: "LLaMA 3.2 1B" },
+  {
+    id: "1",
+    name: "Gemma 3 4B",
+    filename: "gemma-3-4b-it-UD-IQ2_M.gguf",
+    link: "https://huggingface.co/unsloth/gemma-3-4b-it-GGUF/resolve/main/gemma-3-4b-it-UD-IQ2_M.gguf",
+  },
+  {
+    id: "2",
+    name: "Phi 3 Mini",
+    filename: "Phi-3-mini-4k-instruct-IQ2_M.gguf",
+    link: "https://huggingface.co/bartowski/Phi-3-mini-4k-instruct-GGUF/resolve/main/Phi-3-mini-4k-instruct-IQ2_M.gguf",
+  },
+  { id: "3", name: "LLaMA 3.2 3B", filename: "", link: "" },
+  {
+    id: "4",
+    name: "LLaMA 3.2 1B Q4M",
+    filename: "Llama-3.2-1B-Instruct-Q4_K_M.gguf",
+    link: "https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf",
+  },
+  {
+    id: "5",
+    name: "Gemma 3 1B Q6K",
+    filename: "gemma-3-1b-it-Q6_K.gguf",
+    link: "https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q6_K.gguf",
+  },
+  {
+    id: "6",
+    name: "LLama 3.2 1B Q6K",
+    filename: "Llama-3.2-1B-Instruct-Q6_K.gguf",
+    link: "https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q6_K.gguf",
+  },
 ];
 
 export function ModelDownloadList() {
@@ -28,6 +57,7 @@ export function ModelDownloadList() {
 
   async function downloadModel(
     url: string,
+    filename: string,
     onProgress?: (progress: number) => void
   ) {
     const folderInfo = await FileSystem.getInfoAsync(DOWNLOAD_DIR);
@@ -37,9 +67,11 @@ export function ModelDownloadList() {
       });
     }
 
-    const fileInfo = await FileSystem.getInfoAsync(MODEL_PATH);
+    const fileInfo = await FileSystem.getInfoAsync(
+      `${DOWNLOAD_DIR}/${filename}`
+    );
     if (fileInfo.exists) {
-      console.log("✅ Modelo já existe:", MODEL_PATH);
+      console.log("✅ Modelo já existe:", `${DOWNLOAD_DIR}/${filename}`);
       return MODEL_PATH;
     }
 
@@ -47,7 +79,7 @@ export function ModelDownloadList() {
 
     const downloadResumable = FileSystem.createDownloadResumable(
       url,
-      MODEL_PATH,
+      `${DOWNLOAD_DIR}/${filename}`,
       {},
       (downloadProgress) => {
         const progress =
@@ -68,21 +100,18 @@ export function ModelDownloadList() {
     }
   }
 
-  const handleDownload = async (name: string) => {
+  const handleDownload = async (link: string, filename: string) => {
     setDownloading(true);
     try {
-      await downloadModel(
-        "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
-        (p) => setProgress(p)
-      );
+      await downloadModel(link, filename, (p) => setProgress(p));
     } catch (err) {
       console.error(err);
     }
     setDownloading(false);
   };
 
-  const handleRemove = (modelName: string) => {
-    console.log("Removed:", modelName);
+  const handleRemove = async (modelName: string) => {
+    await removeModel(modelName);
   };
 
   return (
@@ -102,7 +131,7 @@ export function ModelDownloadList() {
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={[S.iconButton, { backgroundColor: "#315cd3ff" }]}
-                onPress={() => handleDownload(item.name)}
+                onPress={() => handleDownload(item.link, item.filename)}
               >
                 <Ionicons name="download-outline" size={22} color="#fff" />
               </TouchableOpacity>
@@ -112,7 +141,7 @@ export function ModelDownloadList() {
                   S.iconButton,
                   { backgroundColor: "red", marginLeft: 10 },
                 ]}
-                onPress={() => handleRemove(item.name)}
+                onPress={() => handleRemove(item.filename)}
               >
                 <Ionicons name="trash-outline" size={22} color="#fff" />
               </TouchableOpacity>

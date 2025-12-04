@@ -1,0 +1,23 @@
+stateDiagram-v2
+    [*] --> SelecionarModelo
+
+    SelecionarModelo --> BaixarModelos: Escolhe baixar modelos
+    BaixarModelos --> InstalandoModelo
+    InstalandoModelo --> SelecionarModelo: Instalado
+
+    SelecionarModelo --> EnviarPergunta: Modelo escolhido
+
+    EnviarPergunta --> Processando
+
+    Processando --> GerandoResposta
+
+    GerandoResposta --> RespostasTokenToken
+
+    RespostasTokenToken --> RespostaCompleta
+
+    RespostaCompleta --> NovaPergunta
+
+    NovaPergunta --> SelecionarModelo: Sim
+    NovaPergunta --> Finalizar: Não
+
+    Finalizar --> [*]

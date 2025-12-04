@@ -1,0 +1,16 @@
+flowchart TD
+    A["Usuário Escolhe o Modelo LLM"] 
+        --> B["Escolher LLM no Dispositivo"]
+
+    B --> C["Usuário Envia Pergunta"]
+
+    C --> D["Estado: Loading\nProcessando Resposta"]
+
+    D --> E["LLM Gera Resposta Token a Token"]
+
+    E --> F["Resposta Completa Exibida"]
+
+    F --> G{"Nova pergunta?"}
+
+    G -->|Sim| B
+    G -->|Não| H["Finaliza o app"]

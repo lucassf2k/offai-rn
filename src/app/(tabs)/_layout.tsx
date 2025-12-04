@@ -33,6 +33,16 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="audio"
+        options={{
+          title: "Audio",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="download" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
