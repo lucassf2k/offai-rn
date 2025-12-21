@@ -83,15 +83,3 @@ offai-rn/
 ├── package.json
 └── ...
 ```
-
-## Dependencies
-
-- **@expo/vector-icons**: Vector icons for Expo apps.
-- **@react-navigation/native**: Navigation for React Native apps.
-- **expo**: The Expo platform.
-- **expo-file-system**: File system access for Expo apps.
-- **expo-router**: File-based routing for React Native and web apps.
-- **llama.rn**: Library for running Llama models on-device.
-- **react**: A JavaScript library for building user interfaces.
-- **react-native**: A framework for building native apps with React.
-- **react-native-paper**: Material Design components for React Native.
