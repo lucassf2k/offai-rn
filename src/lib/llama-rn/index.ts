@@ -47,7 +47,20 @@ export async function generateResponse(
   const res = await ctx.completion(
     {
       messages: [
-        { role: "system", content: "Você é um assistente simpático." },
+        {
+          role: "system",
+          content: `Interprete os dados de entrada e preencha a lista:
+     
+**Organize em:**
+
+**Valor:**
+**Categoria:**
+**Local:**
+**Forma de Pagamento:**
+
+
+---`,
+        },
         { role: "user", content: input },
       ],
       n_predict: nPredict,

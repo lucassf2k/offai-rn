@@ -33,7 +33,7 @@ export default function Index() {
 
   useEffect(() => {
     (async () => {
-      const ctx = await initModel("gemma-3-1b-it-Q6_K.gguf");
+      const ctx = await initModel("Phi-3-mini-4k-instruct-q4.gguf");
       setLlamaCtx(ctx);
     })();
   }, []);
@@ -97,7 +97,7 @@ export default function Index() {
         dropdownIconColor="#FFF"
       >
         <Picker.Item label="Selecionar modelo..." value="" />
-        <Picker.Item label="Gemma 2B" value="gemma" />
+        <Picker.Item label="Gemma 3B" value="gemma" />
         <Picker.Item label="Phi 3 Mini" value="phi3" />
         <Picker.Item label="LLaMA 3.2 1B" value="llama1b" />
       </Picker>
